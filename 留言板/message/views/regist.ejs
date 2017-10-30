@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+      body{background:url(../imgs/bb.jpg) no-repeat center center;}
+      h1{
+        font-weight:bold;
+        font-family:"微软雅黑";
+        font-size: 40px;
+        text-align:center;
+        margin-top:7%;
+      }
+      div{
+      	border:1px solid white;
+      	border-radius:10px;
+      	background:white;
+      	width:450px;height:250px;
+      	opacity:0.1;
+      	padding:20px 30px;
+        margin:0 auto;
+        margin-top:5%;
+        position:relative;
+      }
+      form{
+        width:450px;height:250px;
+      	position:absolute;
+      	top:36%;left:50%;
+        margin-left:-170px;
+        /* margin-top:-75px; */
+        font-size:25px;
+      }
+      input{
+        width:250px;line-height:30px;
+        margin-bottom:20px;
+      }
+
+      input[type=submit]{
+        display:inline-block;
+        height:34px;
+        width:320px;
+        border-radius: 4px;
+        margin-left:10px;
+      }
+      
+    </style>
+</head>
+<body>
+<h1>请注册</h1>
+<div></div>
+<form action="/doRegist" method="post">
+    用户名：<input type="text" name="username"><br>
+    密&nbsp;&nbsp;&nbsp;码：<input type="password" name="password"><br>
+    &nbsp;&nbsp;<input type="submit" value="注册">
+</form>
+</body>
+</html>

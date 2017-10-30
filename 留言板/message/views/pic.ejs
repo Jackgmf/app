@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Aspect Ratio with Preview Pane | Jcrop Demo</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.Jcrop.js"></script>
+    <script type="text/javascript">
+        jQuery(function($){
+
+            // Create variables (in this scope) to hold the API and image size
+            var jcrop_api,
+                    boundx,
+                    boundy,
+
+            // Grab some information about the preview pane
+                    $preview = $('#preview-pane'),
+                    $pcnt = $('#preview-pane .preview-container'),
+                    $pimg = $('#preview-pane .preview-container img'),
+
+                    xsize = $pcnt.width(),
+                    ysize = $pcnt.height();
+
+            console.log('init',[xsize,ysize]);
+            $('#target').Jcrop({
+                onChange: updatePreview,
+                onSelect: updatePreview,
+                aspectRatio: xsize / ysize
+            },function(){
+                // Use the API to get the real image size
+                var bounds = this.getBounds();
+                boundx = bounds[0];
+                boundy = bounds[1];
+                // Store the API in the jcrop_api variable
+                jcrop_api = this;
+
+                // Move the preview into the jcrop container for css positioning
+                $preview.appendTo(jcrop_api.ui.holder);
+            });
+
+            function updatePreview(c)
+            {
+                if (parseInt(c.w) > 0)
+                {
+                    var rx = xsize / c.w;
+                    var ry = ysize / c.h;
+
+                    $pimg.css({
+                        width: Math.round(rx * boundx) + 'px',
+                        height: Math.round(ry * boundy) + 'px',
+                        marginLeft: '-' + Math.round(rx * c.x) + 'px',
+                        marginTop: '-' + Math.round(ry * c.y) + 'px'
+                    });
+                }
+            };
+
+        });
+
+
+    </script>
+    <link rel="stylesheet" href="css/demos.css" type="text/css" />
+    <link rel="stylesheet" href="css/jquery.Jcrop.css" type="text/css" />
+    <style type="text/css">
+        body{background:url(../imgs/aa.jpg);}
+        /* .aa{
+           border:1px solid white;
+           border-radius:10px;
+           background:#090909;
+           width:100%;height:800px;
+           opacity:0.5;
+           padding:20px 30px;
+           margin:0 auto;
+           margin-top:3%;
+           position:relative;
+       } */
+       #bb{
+           /* width:100%; */
+           /* position:absolute; */
+           /* left:50%;top:30%; */
+           /* margin-left:-450px; */
+           text-align: center;
+           /* width:500px; */
+           /* margin:0 auto; */
+
+       }
+       img{text-align: center;}
+       input{
+       /* margin-bottom:30px; */
+       /* margin-top:20px; */
+       /* margin-left:270px; */
+       display:inline-block;
+       height:34px;
+       width:250px;
+       border-radius: 4px;,
+       margin-top:550px;
+       }
+       
+        .jcrop-holder #preview-pane {
+            display: block;
+            position: absolute;
+            z-index: 2000;
+            top: 10px;
+            right: -280px;
+            padding: 6px;
+            border: 1px rgba(0,0,0,.4) solid;
+            background-color: white;
+
+            -webkit-border-radius: 6px;
+            -moz-border-radius: 6px;
+            border-radius: 6px;
+
+            -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+            -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+            box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+        }
+        #preview-pane .preview-container {
+            width: 250px;
+            height:250px;
+            overflow: hidden;
+        }
+
+    </style>
+
+</head>
+<body>
+<!-- <div class="aa"></div> -->
+<div id="bb">
+    <img src="<%=pic%>" id="target" alt="[Jcrop Example]"/>
+   
+      <div id="preview-pane">
+        <div class="preview-container">
+            <img src="<%=pic%>" class="jcrop-preview" alt="Preview" />
+        </div>
+      </div>
+      <input type="button" value="剪切" id="btn">
+</div>
+
+</body>
+<script>
+    $("#btn").on("click",function(){
+        var img = $("#target").attr("src");
+        //获取被剪切图片的x，y坐标以及该图片的width和height
+        var x = $(".jcrop-holder>div:first-child").css("left");
+        var y = $(".jcrop-holder>div:first-child").css("top");
+        var width = $(".jcrop-holder>div:first-child").css("width");
+        var height = $(".jcrop-holder>div:first-child").css("height");
+
+        console.log(x);
+        //发送Ajax请求
+        $.ajax({
+            url:"/cut",
+            data:{x:x,y:y,width:width,height:height,img:img},
+            success:function(result){
+             window.location.href = "/";
+            }
+        })
+    })
+</script>
+</html>
+

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+      body{background:url(../imgs/aa.jpg) ;}	
+       div{
+      	border:1px solid white;
+      	border-radius:10px;
+      	background:#090909;
+      	width:450px;height:400px;
+      	opacity:0.5;
+      	padding:20px 30px;
+        margin:0 auto;
+        margin-top:10%;
+        position:relative;
+      }
+	  form{
+        width:450px;height:250px;
+      	position:absolute;
+      	top:30%;left:50%;
+        margin-left:-225px;
+        /* margin-top:-75px; */
+        font-size:25px;
+      }
+      input{
+        margin-bottom:30px;
+        /* margin-top:20px; */
+        margin-left:70px;
+      }
+      input[type=submit]{
+        display:inline-block;
+        height:34px;
+        width:320px;
+        border-radius: 4px;
+        /* margin-left:-10px; */
+      }	
+      p{
+      	margin-left:70px;
+      }
+    </style>
+</head>
+<body>
+<div></div>
+<form action="/doUpload" method="post" enctype="multipart/form-data">
+    <p>选择头像：</p>
+    <input type="file" name="pic"><br>
+    <input type="submit" value="提交">
+</form>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        body{background:url(../imgs/cc.jpg);}
+        fieldset{
+            width: 90%;
+        }
+        p,form{
+            margin-left: 75px;
+        }
+        h3 a{
+            /* margin-left:100px; */
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: normal;
+            text-align: center;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            color: #333;
+            background-color: #fff;
+            border-color: #ccc;
+            text-decoration:none;
+            background:#DDDDDD;
+            /* width:80px; */
+            float:right;
+            margin-right:80px;
+        }
+
+        .bb a{
+            /* margin-left:100px; */
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: normal;
+            text-align: center;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            color: #333;
+            background-color:#4BD0E4;
+            border-color: #ccc;
+            text-decoration:none;
+            /* width:80px; */
+            float:right;
+            margin-right:20px;
+        }
+        .aa{
+            width:87%;
+            margin:0 auto;
+            
+        }
+        .p{
+            background:#9FE8F7;
+            width:70%;height:150px;
+            position:relative;
+            padding-left:40px;
+            /* margin:; */
+        }
+        .bb{
+            /* margin:0 auto; */
+            width:90%;height:100px;
+            background:#F6ECEC;
+            box-shadow:2px 3px 8px 2px #4A4949;
+            position:absolute;
+            left:50px;
+        }
+        
+        form{
+            background:#C9C5C5;
+            width:59%;
+            padding-left:20px;
+        }
+        textarea{width:700px;height:100px;}  
+        input[type=submit]{
+        display:inline-block;
+        height:34px;
+        width:150px;
+        border-radius: 4px;
+        margin-left:50px;
+        margin-top:18px;
+        float:left;
+      }
+    </style>
+</head>
+<body>
+<div class="aa">
+    <form action="/add" method="post">
+        <fieldset>
+            <legend>留言</legend>
+            <%for(var i=0;i<users.length;i++){%>
+              <%if(username==users[i].username){%>
+                    <a href="/upload"><img src="<%=users[i].pic%>" width="20px" alt=""></a>
+              <%}%>
+            <%}%>
+            <%=username%><br>
+            留言：<br>
+            <textarea name="msg"></textarea><br>
+            <input type="submit" value="提交">
+            <h3><a href="/loginQie">切换账号</a></h3>
+        </fieldset>
+    </form>
+    <hr>
+    <%for(var i=0;i<msg.length;i++){%>
+    <div class="p">
+        <p>
+            <!--将头像保存在message集合中，采用的显示头像的方式，虽然写起来方便，但是不符合逻辑-->
+            <!--<img src="" width="20px" alt="">-->
+            <!--将头像保存在user集合中，采用的显示头像的方式-->
+            <%for(var j=0;j<users.length;j++){%>
+               <%if(msg[i].username==users[j].username){%>
+                 <img src="<%=users[j].pic%>" width="20px" alt="">
+               <%}%>
+            <%}%>
+            <%=msg[i].username%> 说：<br>
+            <div class="bb">
+              <%=msg[i].msg%><br><br>
+              <%=msg[i].date%><br>
+              <%if(username==msg[i].username){%>
+                <a href="/del?id=<%=msg[i]._id%>">删除</a>&nbsp;<a href="/modify?id=<%=msg[i]._id%>">修改</a>
+              <%}%>
+            </div>  
+        </p>
+    </div>
+    <hr>
+    <%}%>
+</div>
+</body>
+</html>

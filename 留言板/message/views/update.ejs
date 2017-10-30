@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+	  body{
+	  	background:url(../imgs/bb.jpg) center center;
+	  }	
+	  div{
+      	border:1px solid white;
+      	border-radius:10px;
+      	background:white;
+      	width:450px;height:400px;
+      	opacity:0.1;
+      	padding:20px 30px;
+        margin:0 auto;
+        margin-top:10%;
+        position:relative;
+      }
+	  form{
+        width:450px;height:250px;
+      	position:absolute;
+      	top:23%;left:50%;
+        margin-left:-225px;
+        /* margin-top:-75px; */
+        font-size:25px;
+      }
+      input{
+        margin-bottom:20px;
+      }
+      input[type=submit]{
+        display:inline-block;
+        height:34px;
+        width:320px;
+        border-radius: 4px;
+        margin-left:50px;
+      }
+      textarea{
+      	width:350px;
+      	height:200px;
+      	border-radius:8px;
+      }
+    </style>
+</head>
+<body>
+<div></div>
+<form action="/doUpdate" method="post">
+    <input type="text" name="id" value="<%=msg[0]._id%>" readonly><br>
+    姓名：
+    <span><%=msg[0].username%></span><br><br>
+    留言：
+    <textarea name="msg"></textarea><br>
+    &nbsp;&nbsp; <input type="submit" value="修改">
+</form>
+</body>
+</html>

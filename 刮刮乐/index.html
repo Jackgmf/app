@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>HTML5-刮刮卡</title>
+<script type="text/javascript" src="jq/jquery.min.js"></script>
+<script type="text/javascript" src="toolsPoint/toolsPoint.js"></script>
+<style type="text/css">
+	*{
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+	body{
+		position: relative;
+		box-sizing:border-box;
+		padding-top: 50px;
+	}
+	.header{
+		background: #e4393c;
+		width:600px;
+		height: 155px;
+		margin: 0 auto;
+		padding-top: 20px;
+	}
+	.ggl{
+		position: relative;
+		width: 400px;
+		height: 90px;
+		background: url(imgs/ggl.png) no-repeat center center;
+		background-size: 100% 100%;
+		margin: 0 auto;
+	}
+	.canvas{
+		position:absolute;
+		top:2px;
+		left:3%;
+		width:94%;
+		height:82px;
+		line-height:82px;
+		text-align:center;
+		z-index: 2;
+		
+	}
+	.info{
+		position:absolute;
+		top:2px;
+		width:100%;
+		height:82px;
+		text-align:center;
+	}
+	.info span{
+		display: block;
+		font-size: 18px;
+	}
+	#prompt{
+		line-height: 40px;
+	}
+	.btn{
+		position: relative;
+		width: 50%;
+		height: 35px;
+		line-height: 35px;
+		background: #df412b;
+		color: #fff;
+		border-radius: 5px;
+		margin: 0 auto;
+		z-index: 1;
+	}
+	
+	.num{
+		width: 100%;
+		height: 30px;
+		line-height: 30px;
+		text-align: center;
+		font-size:14px;
+		margin-top: 5px;
+	}
+	#ok, #no{display: none;}
+</style>
+</head>
+<body>
+	<div class='header'>
+		<!-- 刮开后看到的里面的中奖内容 -->
+		<div class="ggl" id="top">
+			<div class="info" id="prize">
+				<span id="prompt"></span>
+				<span class="btn" id="ok">领取奖品</span>
+				<span class="btn" id="no">再来一次</span>
+			</div>
+			<canvas id="canvas1" class="canvas"></canvas>
+		</div>
+		<!-- 剩下划卡的次数 -->
+		<div class="num">
+			您还有<span class="num1"></span>次刮卡机会
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	//第一步：
+	var c1;         //画布
+	var ctx;        //绘制环境
+	var ismousedown;//表示用户鼠标是否按下 true/false
+	var isOk;       //用户是否刮了一半以上 true/false
+
+	//第二步
+	//当页面加载后初始化画布
+	window.onload = function(){
+		//1.获取画布 c1
+		 c1 = document.getElementById("canvas1");
+		//2.获取绘制环境
+		 ctx = c1.getContext("2d");
+		//3.获取画布的宽高  clientWidth clientHeight
+		c1.width = c1.clientWidth;
+		c1.height = c1.clientHeight;
+		//4.调用toolsPoint方法
+		tool.captureMouse(c1,eventDown,eventMove,eventUp);
+
+		initCanvas();
+		initlize();
+
+	};
+	// 第三步  绘制灰色矩形  文字
+	function initCanvas(){
+	 //在目标图片上显示源图像
+	 ctx.globalCompositeOperation = "source-over";
+	 //设置绘制颜色  #797979
+	 ctx.fillStyle = "#797979";
+	 //绘制矩形
+     ctx.fillRect(0,0,c1.width,c1.height)
+	 //绘制文字  加粗 30px 微软雅黑 
+	 ctx.font = "bold 30px '微软雅黑'";
+	 ctx.fillStyle = "white";
+	 ctx.textAlign = "center";
+	 ctx.fillText("刮一刮",c1.width/2,c1.height/2+10)
+	 //文字居中对齐  刮一刮
+	 //在源图像上显示目标图像
+	 ctx.globalCompositeOperation = "destination-out";
+
+	}
+
+	//第四步：鼠标按下事件
+	function eventDown(e){
+	  e.preventDefault();// 取消上一个事件
+	  ismousedown = true;//鼠标已经按下
+	}
+	//鼠标移动事件
+	function eventMove(e){
+	  e.preventDefault();
+      if(ismousedown){ //为true,表示 按下
+      //不停的绘制圆，刮开区域
+      var ggl = document.getElementById("top")
+      var x = e.point.dx - ggl.offsetLeft;
+      var y = e.point.dy - ggl.offsetTop;
+      //绘制圆  10-12
+      ctx.beginPath();
+      ctx.arc(x,y,10,0,Math.PI*2)
+      ctx.closePath();
+      ctx.fill();
+      }
+	}
+	//鼠标抬起事件
+	function eventUp(e){
+     e.preventDefault(); //取消上一个事件
+     //处理刮开一半的逻辑
+     //1.获得画布的像素数据 保存在 a 中
+     var a = ctx.getImageData(0,0,c1.width,c1.height)
+     //2.遍历 a.data  RGBA 值 两个循环变量 i j
+     for(var i=0,j=0;i<a.data.length;i+=4){
+     //3.如果 a.data[i] == 0;
+     if(a.data[i] == 0){
+        //4. j++;
+       j++
+      }
+    
+     //判断被刮开的区域大于一半
+     //1.如果 j 大于 a.data.length/8
+     if(j>a.data.length/8){
+        //isOk = true;
+        isOk = true;
+    }
+}
+     //如果 isOk 为 true 进入判断 让按钮显示出来可以点击
+     if(isOk){
+        //1.先获取 className 为.btn的按钮 保存在 btn中
+       var btn = document.querySelectorAll(".btn");
+        //2.for循环 遍历 btn
+        for(var i=0;i<btn.length;i++){
+          //3.设置当前btn的z-index值为 3
+            btn[i].style.zIndex = "3";
+          }
+        }  
+       //4.设置 ismousedown 为 false
+      ismousedown = false;
+	}
+
+	//第五步：控制中奖概率
+	var t = 1; //刮卡的次数
+    var initlize = function(){
+    	//把 btn的zIndex 设回 1
+    	var btn = document.querySelectorAll(".btn");
+    	for(var i=0;i<btn.length;i++){
+    		btn[i].style.zIndex = "1";
+    	
+    	//把两个按钮都影藏起来
+    	 btn[i].style.display = "none";
+    	}
+    	//剩余刮卡次数
+    	$(".num1").html(4-t);
+    	//获取随机数  getNum
+    	function getNum(a,b){
+    	  return parseInt(Math.random()*(b-a)+a)
+    		 //
+    	}
+    	//获取的随机数 1~100
+    	var r = getNum(1,100);
+    	//控制中奖概率
+    	if(t*33>r){
+    		//1.获取 id 为 prompt 设置内容 为 恭喜你中奖了
+    		document.getElementById("prompt").innerHTML = "恭喜你中奖了";
+    		//2.把id为ok的按钮显示出来
+    		 var ok = document.getElementById("ok")
+    		ok.style.display = "block";
+    		//3.为按钮绑定点击事件
+    		ok.addEventListener("click",function(){
+    		//4. alert("不好意，奖品领完了");
+    		  alert("不好意，奖品领完了");
+           })
+    	}else{
+    		//未中奖
+    		//1.获取 id 为 prompt 设置内容 为 遗憾...
+    	    document.getElementById("prompt").innerHTML = "遗憾...";
+    		//2.把再来一次的按钮显示出来
+    		var no = document.getElementById("no")
+    		no.style.display = "block";
+
+    		
+    	}
+    }
+
+    //第六步：没有中奖再来一次
+      //1.给再来一次按钮绑定事件 click
+      no.addEventListener("click",function(){
+      	//2.如果 t>3
+       if(t>3){
+       	//3.alert("次数用完，不能刮了")
+       	alert("次数用完，不能刮了");
+       	 //否则
+       }else{
+           //t++
+           t++;
+           //初始化按钮
+           ok.style.display = "none";
+           no.style.display = "none";
+           //把按钮都隐藏起来
+           window.onload();
+           //再次调用 onload 方法
+           
+       }
+    })
+
+      
+      
+
+	
+	 
+
+</script>
+</html>
